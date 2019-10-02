@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set
+
+#find latest getmesh version
+
+export GETMESH_VERSION=$(curl https://maven.gentics.com/maven2/com/gentics/mesh/mesh/maven-metadata.xml | grep  "<release>" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
+echo using getmesh version: $GETMESH_VERSION
+
+#export ODB_VERSION=$(curl https://maven.gentics.com/maven2/com/gentics/mesh/mesh-bom/$GETMESH_VERSION/mesh-bom-$GETMESH_VERSION.pom | xmllint --xpath "//*[local-name()='project']/*[local-name()='properties']/*[local-name()='orientdb.version']/text()" -)
+export ODB_VERSION=$(curl https://maven.gentics.com/maven2/com/gentics/mesh/mesh-bom/$GETMESH_VERSION/mesh-bom-$GETMESH_VERSION.pom | grep  "<orientdb.version>" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
+
+echo using orientdb version: $ODB_VERSION
+
+docker build --build-arg GETMESH_VERSION=${GETMESH_VERSION} --build-arg ODB_VERSION=${ODB_VERSION} -t index.docker.io/cschockaert/getmesh-tools:latest -t index.docker.io/cschockaert/getmesh-tools:$GETMESH_VERSION .
