@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo pushing all tags
+docker push index.docker.io/cschockaert/getmesh-tools
